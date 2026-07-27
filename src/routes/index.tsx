@@ -1,24 +1,85 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Toaster } from "@/components/ui/sonner";
+import { Navbar } from "@/components/landing/Navbar";
+import { Hero } from "@/components/landing/Hero";
+import { Problems } from "@/components/landing/Problems";
+import { Benefits } from "@/components/landing/Benefits";
+import { ReportIncludes } from "@/components/landing/ReportIncludes";
+import { WhyChooseUs } from "@/components/landing/WhyChooseUs";
+import { HowItWorks } from "@/components/landing/HowItWorks";
+import { Testimonials } from "@/components/landing/Testimonials";
+import { Faq, faqs } from "@/components/landing/Faq";
+import { FinalCta } from "@/components/landing/FinalCta";
+import { SiteFooter } from "@/components/landing/SiteFooter";
+import { StickyMobileCta } from "@/components/landing/StickyMobileCta";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+const title = "Free Personalized Numerology Report | Numerology Insights";
+const description =
+  "Get a FREE personalized numerology report revealing your life path number, strengths, career direction, relationships and growth opportunities. Delivered in minutes.";
+
 export const Route = createFileRoute("/")({
   component: Index,
+  head: () => ({
+    meta: [
+      { title },
+      { name: "description", content: description },
+      { property: "og:title", content: title },
+      { property: "og:description", content: description },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "/" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: title },
+      { name: "twitter:description", content: description },
+    ],
+    links: [{ rel: "canonical", href: "/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Numerology Insights",
+          url: "/",
+          description:
+            "Modern, ethical numerology guidance for career, relationships and personal growth.",
+          sameAs: ["https://instagram.com", "https://youtube.com"],
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqs.map((faq) => ({
+            "@type": "Question",
+            name: faq.question,
+            acceptedAnswer: { "@type": "Answer", text: faq.answer },
+          })),
+        }),
+      },
+    ],
+  }),
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-dvh">
+      <Navbar />
+      <main>
+        <Hero />
+        <Problems />
+        <Benefits />
+        <ReportIncludes />
+        <WhyChooseUs />
+        <HowItWorks />
+        <Testimonials />
+        <Faq />
+        <FinalCta />
+      </main>
+      <SiteFooter />
+      <StickyMobileCta />
+      <Toaster position="top-center" />
+      <div className="h-16 lg:hidden" aria-hidden="true" />
     </div>
   );
 }
