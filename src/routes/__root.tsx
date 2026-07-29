@@ -91,6 +91,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       ...analyticsMeta(),
+      { property: "og:title", content: "Free Personalized Numerology Report | Numerology Insights" },
+      { name: "twitter:title", content: "Free Personalized Numerology Report | Numerology Insights" },
+      { property: "og:description", content: "Modern, ethical numerology guidance for career, relationships and personal growth. Claim your free personalized numerology report." },
+      { name: "twitter:description", content: "Modern, ethical numerology guidance for career, relationships and personal growth. Claim your free personalized numerology report." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/8542727e-316d-4d4a-9701-3cb4044922e3" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/8542727e-316d-4d4a-9701-3cb4044922e3" },
     ],
     links: [
       {
