@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { toast } from "sonner";
+import { LEAD_STORAGE_KEY } from "@/lib/lead-storage";
 import { Loader2, ShieldCheck, Lock, BadgeCheck, MailCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
