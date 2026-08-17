@@ -46,16 +46,43 @@ export async function exportPdf(node: HTMLElement, fileBase: string) {
   // Slice the tall canvas into page-sized chunks so the whole report is included.
   const scale = pageW / canvas.width;
   const sliceHeightPx = Math.floor(pageH / scale);
+
+  // Collect safe cut positions (bottom edge of every text block / card) in
+  // canvas pixels, so a page break never runs through a line of text.
+  const nodeTop = node.getBoundingClientRect().top;
+  const pxRatio = canvas.height / node.scrollHeight;
+  const breakPoints: number[] = [];
+  node.querySelectorAll("p, li, h1, h2, section, header, footer, div").forEach((el) => {
+    const rect = (el as HTMLElement).getBoundingClientRect();
+    if (rect.height === 0) return;
+    breakPoints.push((rect.bottom - nodeTop) * pxRatio);
+  });
+  breakPoints.sort((a, b) => a - b);
+
+  function findBreak(start: number, proposed: number) {
+    const minHeight = sliceHeightPx * 0.55;
+    let best = proposed;
+    for (const bp of breakPoints) {
+      if (bp > proposed) break;
+      if (bp - start >= minHeight) best = bp;
+    }
+    return Math.floor(best);
+  }
+
   let offset = 0;
   let page = 0;
 
   while (offset < canvas.height) {
-    const height = Math.min(sliceHeightPx, canvas.height - offset);
+    const proposed = Math.min(offset + sliceHeightPx, canvas.height);
+    const end = proposed >= canvas.height ? canvas.height : findBreak(offset, proposed);
+    const height = end - offset;
+
     const slice = document.createElement("canvas");
     slice.width = canvas.width;
     slice.height = height;
     const ctx = slice.getContext("2d");
     if (!ctx) break;
+
     ctx.fillStyle = "#020617";
     ctx.fillRect(0, 0, slice.width, slice.height);
     ctx.drawImage(canvas, 0, offset, canvas.width, height, 0, 0, canvas.width, height);
