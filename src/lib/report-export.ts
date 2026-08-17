@@ -46,16 +46,41 @@ export async function exportPdf(node: HTMLElement, fileBase: string) {
   // Slice the tall canvas into page-sized chunks so the whole report is included.
   const scale = pageW / canvas.width;
   const sliceHeightPx = Math.floor(pageH / scale);
+  const srcCtx = canvas.getContext("2d");
+
+  // Find a row near the proposed cut where the pixels are visually uniform
+  // (a gap between cards / lines) so text is never sliced in half.
+  function findBreak(start: number, proposed: number) {
+    if (!srcCtx || proposed >= canvas.height) return proposed;
+    const maxLookback = Math.floor(sliceHeightPx * 0.18);
+    const sampleWidth = canvas.width;
+    for (let y = proposed; y > proposed - maxLookback && y > start + 50; y -= 2) {
+      const row = srcCtx.getImageData(0, y, sampleWidth, 1).data;
+      let min = 255;
+      let max = 0;
+      for (let i = 0; i < row.length; i += 16) {
+        const lum = (row[i] + row[i + 1] + row[i + 2]) / 3;
+        if (lum < min) min = lum;
+        if (lum > max) max = lum;
+      }
+      if (max - min < 12) return y;
+    }
+    return proposed;
+  }
+
   let offset = 0;
   let page = 0;
 
   while (offset < canvas.height) {
-    const height = Math.min(sliceHeightPx, canvas.height - offset);
+    const proposed = Math.min(offset + sliceHeightPx, canvas.height);
+    const end = proposed >= canvas.height ? canvas.height : findBreak(offset, proposed);
+    const height = end - offset;
     const slice = document.createElement("canvas");
     slice.width = canvas.width;
     slice.height = height;
     const ctx = slice.getContext("2d");
     if (!ctx) break;
+
     ctx.fillStyle = "#020617";
     ctx.fillRect(0, 0, slice.width, slice.height);
     ctx.drawImage(canvas, 0, offset, canvas.width, height, 0, 0, canvas.width, height);
