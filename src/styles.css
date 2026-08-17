@@ -236,3 +236,20 @@
     transition-duration: 0.001ms !important;
   }
 }
+
+@media print {
+  html,
+  body {
+    background: #ffffff !important;
+  }
+  #report-document {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+  #report-document section,
+  #report-document header,
+  #report-document footer {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

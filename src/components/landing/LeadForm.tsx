@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { toast } from "sonner";
+import { LEAD_STORAGE_KEY } from "@/lib/lead-storage";
 import { Loader2, ShieldCheck, Lock, BadgeCheck, MailCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -58,6 +60,7 @@ const trustPoints = [
 ];
 
 export function LeadForm() {
+  const navigate = useNavigate();
   const [reason, setReason] = useState("");
   const [consent, setConsent] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -89,14 +92,17 @@ export function LeadForm() {
 
     setErrors({});
     setSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 900));
+    try {
+      sessionStorage.setItem(LEAD_STORAGE_KEY, JSON.stringify(parsed.data));
+    } catch {
+      /* storage unavailable */
+    }
+    await new Promise((resolve) => setTimeout(resolve, 700));
     setSubmitting(false);
-    form.reset();
-    setReason("");
-    setConsent(false);
-    toast.success("Your free report is on its way", {
-      description: "We'll deliver your personalized numerology report by email and WhatsApp.",
+    toast.success("Your report is ready", {
+      description: "Opening your personalized numerology report. A copy is also sent to your email.",
     });
+    navigate({ to: "/report" });
   }
 
   const fieldClass =
