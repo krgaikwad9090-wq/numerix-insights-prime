@@ -4,11 +4,10 @@ async function renderCanvas(node: HTMLElement) {
   const { default: html2canvas } = await import("html2canvas-pro");
   return html2canvas(node, {
     backgroundColor: "#020617",
-    scale: Math.min(2, window.devicePixelRatio || 1.5),
+    scale: 2,
     useCORS: true,
+    logging: false,
     windowWidth: node.scrollWidth,
-    height: node.scrollHeight,
-    windowHeight: node.scrollHeight,
   });
 }
 
