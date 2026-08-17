@@ -52,10 +52,12 @@ export async function exportPdf(node: HTMLElement, fileBase: string) {
   // (a gap between cards / lines) so text is never sliced in half.
   function findBreak(start: number, proposed: number) {
     if (!srcCtx || proposed >= canvas.height) return proposed;
-    const maxLookback = Math.floor(sliceHeightPx * 0.18);
-    const sampleWidth = canvas.width;
+    const maxLookback = Math.floor(sliceHeightPx * 0.22);
+    // Ignore the outer edges so card borders don't count as content.
+    const inset = Math.floor(canvas.width * 0.12);
+    const sampleWidth = canvas.width - inset * 2;
     for (let y = proposed; y > proposed - maxLookback && y > start + 50; y -= 2) {
-      const row = srcCtx.getImageData(0, y, sampleWidth, 1).data;
+      const row = srcCtx.getImageData(inset, y, sampleWidth, 1).data;
       let min = 255;
       let max = 0;
       for (let i = 0; i < row.length; i += 16) {
@@ -63,8 +65,9 @@ export async function exportPdf(node: HTMLElement, fileBase: string) {
         if (lum < min) min = lum;
         if (lum > max) max = lum;
       }
-      if (max - min < 12) return y;
+      if (max - min < 26) return y;
     }
+
     return proposed;
   }
 
