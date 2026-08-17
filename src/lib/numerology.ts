@@ -221,7 +221,7 @@ export function generateReport(input: LeadInput, now: Date = new Date()) {
   ).map((n) => (n > 9 ? reduceNumber(n, false) : n));
 
   const reasonFocus: Record<string, string> = {
-    Career: `With Life Path ${lifePath} and Expression ${expression}, your career grows fastest when you ${expr.careers[0].toLowerCase()} style work sits at the centre of your week, not the edges.`,
+    Career: `With Life Path ${lifePath} and Expression ${expression}, your career grows fastest when "${expr.careers[0]}" style work sits at the centre of your week, not the edges.`,
     Relationship: `${core.relationship} Your Soul Urge ${soulUrge} means you privately need ${soul.essence.toLowerCase()}`,
     Business: `Your ${core.title} pattern favours ownership. Pair it with the discipline of your Expression ${expression} to convert ideas into revenue.`,
     "Self Discovery": `Your Soul Urge ${soulUrge} is the quiet engine: ${soul.essence}`,
@@ -249,7 +249,7 @@ export function generateReport(input: LeadInput, now: Date = new Date()) {
     focus: reasonFocus[input.reason] ?? reasonFocus.Other,
     actions: [
       `Block two hours each week for work that uses your ${core.title.replace("The ", "").toLowerCase()} strength directly.`,
-      `Name your biggest watch-out — ${core.watchOut.toLowerCase()} — and pick one habit that counters it this month.`,
+      `Name your biggest watch-out — ${core.watchOut.toLowerCase().replace(/\.$/, "")} — and pick one habit that counters it this month.`,
       `Align this year's single biggest decision with your Personal Year ${personalYear} theme: ${py.theme.toLowerCase()}.`,
     ],
     summary: `${input.fullName.trim()}, you carry a Life Path ${lifePath} — ${core.title}. ${core.essence} Your name adds an Expression ${expression} (${expr.title}) and a Soul Urge ${soulUrge} (${soul.title}), so the world meets you as ${persona.title.replace("The ", "a ")} while your inner motive stays ${soul.title.replace("The ", "").toLowerCase()}. Through ${year} you are in a Personal Year ${personalYear}: ${py.theme.toLowerCase()}.`,
