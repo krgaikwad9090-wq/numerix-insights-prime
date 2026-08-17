@@ -46,29 +46,27 @@ export async function exportPdf(node: HTMLElement, fileBase: string) {
   // Slice the tall canvas into page-sized chunks so the whole report is included.
   const scale = pageW / canvas.width;
   const sliceHeightPx = Math.floor(pageH / scale);
-  const srcCtx = canvas.getContext("2d");
 
-  // Find a row near the proposed cut where the pixels are visually uniform
-  // (a gap between cards / lines) so text is never sliced in half.
+  // Collect safe cut positions (bottom edge of every text block / card) in
+  // canvas pixels, so a page break never runs through a line of text.
+  const nodeTop = node.getBoundingClientRect().top;
+  const pxRatio = canvas.height / node.scrollHeight;
+  const breakPoints: number[] = [];
+  node.querySelectorAll("p, li, h1, h2, section, header, footer, div").forEach((el) => {
+    const rect = (el as HTMLElement).getBoundingClientRect();
+    if (rect.height === 0) return;
+    breakPoints.push((rect.bottom - nodeTop) * pxRatio);
+  });
+  breakPoints.sort((a, b) => a - b);
+
   function findBreak(start: number, proposed: number) {
-    if (!srcCtx || proposed >= canvas.height) return proposed;
-    const maxLookback = Math.floor(sliceHeightPx * 0.22);
-    // Ignore the outer edges so card borders don't count as content.
-    const inset = Math.floor(canvas.width * 0.12);
-    const sampleWidth = canvas.width - inset * 2;
-    for (let y = proposed; y > proposed - maxLookback && y > start + 50; y -= 2) {
-      const row = srcCtx.getImageData(inset, y, sampleWidth, 1).data;
-      let min = 255;
-      let max = 0;
-      for (let i = 0; i < row.length; i += 16) {
-        const lum = (row[i] + row[i + 1] + row[i + 2]) / 3;
-        if (lum < min) min = lum;
-        if (lum > max) max = lum;
-      }
-      if (max - min < 26) return y;
+    const minHeight = sliceHeightPx * 0.55;
+    let best = proposed;
+    for (const bp of breakPoints) {
+      if (bp > proposed) break;
+      if (bp - start >= minHeight) best = bp;
     }
-
-    return proposed;
+    return Math.floor(best);
   }
 
   let offset = 0;
@@ -77,8 +75,8 @@ export async function exportPdf(node: HTMLElement, fileBase: string) {
   while (offset < canvas.height) {
     const proposed = Math.min(offset + sliceHeightPx, canvas.height);
     const end = proposed >= canvas.height ? canvas.height : findBreak(offset, proposed);
-    console.log("[pdf-slice]", { offset, proposed, end, ctx: !!srcCtx });
     const height = end - offset;
+
     const slice = document.createElement("canvas");
     slice.width = canvas.width;
     slice.height = height;
