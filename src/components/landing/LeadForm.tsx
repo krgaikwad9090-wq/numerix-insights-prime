@@ -60,6 +60,7 @@ const trustPoints = [
 ];
 
 export function LeadForm() {
+  const navigate = useNavigate();
   const [reason, setReason] = useState("");
   const [consent, setConsent] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
