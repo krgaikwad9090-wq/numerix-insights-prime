@@ -89,14 +89,17 @@ export function LeadForm() {
 
     setErrors({});
     setSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 900));
+    try {
+      sessionStorage.setItem(LEAD_STORAGE_KEY, JSON.stringify(parsed.data));
+    } catch {
+      /* storage unavailable */
+    }
+    await new Promise((resolve) => setTimeout(resolve, 700));
     setSubmitting(false);
-    form.reset();
-    setReason("");
-    setConsent(false);
-    toast.success("Your free report is on its way", {
-      description: "We'll deliver your personalized numerology report by email and WhatsApp.",
+    toast.success("Your report is ready", {
+      description: "Opening your personalized numerology report. A copy is also sent to your email.",
     });
+    navigate({ to: "/report" });
   }
 
   const fieldClass =
