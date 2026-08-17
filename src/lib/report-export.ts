@@ -77,6 +77,7 @@ export async function exportPdf(node: HTMLElement, fileBase: string) {
   while (offset < canvas.height) {
     const proposed = Math.min(offset + sliceHeightPx, canvas.height);
     const end = proposed >= canvas.height ? canvas.height : findBreak(offset, proposed);
+    console.log("[pdf-slice]", { offset, proposed, end, ctx: !!srcCtx });
     const height = end - offset;
     const slice = document.createElement("canvas");
     slice.width = canvas.width;
