@@ -9,6 +9,13 @@ const links = [
   { label: "How It Works", href: "#how-it-works" },
   { label: "Reviews", href: "#testimonials" },
   { label: "FAQ", href: "#faq" },
+  { label: "Birth Chart", href: "/birth-chart" },
+  { label: "Planetary Positions", href: "/planetary-positions" },
+  { label: "Nakshatra", href: "/nakshatra" },
+  { label: "Yogas", href: "/yogas" },
+  { label: "Dasha", href: "/dasha" },
+  { label: "Predictions", href: "/predictions" },
+  { label: "Remedies", href: "/remedies" },
 ];
 
 export function Navbar() {

@@ -12,10 +12,14 @@ import { Faq, faqs } from "@/components/landing/Faq";
 import { FinalCta } from "@/components/landing/FinalCta";
 import { SiteFooter } from "@/components/landing/SiteFooter";
 import { StickyMobileCta } from "@/components/landing/StickyMobileCta";
+import { ProductSelector } from "@/components/landing/ProductSelector";
 
-const title = "Free Personalized Numerology Report | Numerology Insights";
+// Product selector display
+const product = "vedic-astrology"; // or "numerology"
+
+const title = "Vedic Astrology Birth Chart | Numerix Insights";
 const description =
-  "Get a FREE personalized numerology report revealing your life path number, strengths, career direction, relationships and growth opportunities. Delivered in minutes.";
+  "Get a FREE personalized Vedic astrology birth chart reading — Janma Kundli, planetary positions, Nakshatra, Dasha, and predictions. Delivered in minutes.";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -66,6 +70,7 @@ function Index() {
     <div className="min-h-dvh">
       <Navbar />
       <main>
+        <ProductSelector />
         <Hero />
         <Problems />
         <Benefits />
