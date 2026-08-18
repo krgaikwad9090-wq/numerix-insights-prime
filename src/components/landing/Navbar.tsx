@@ -80,27 +80,30 @@ export function Navbar() {
       </nav>
 
       {open ? (
-        <div className="border-t border-border bg-background/95 backdrop-blur-xl lg:hidden">
-          <ul className="mx-auto max-w-6xl px-4 py-4 sm:px-6">
+        <div
+          className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm flex items-center justify-center pt-16"
+        >
+          <ul className="flex flex-col gap-6 text-lg font-medium text-white w-full max-w-md">
             {links.map((link) => (
-              <li key={link.href}>
+              <li key={link.href} className="pb-4">
                 <a
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="text-body block rounded-lg px-2 py-3 text-sm transition-colors hover:bg-card hover:text-foreground"
+                  className="hover:text-primary transition-colors"
                 >
                   {link.label}
                 </a>
               </li>
             ))}
-            <li className="pt-2">
-              <Button asChild variant="hero" className="w-full" size="lg">
-                <a href="#lead-form" onClick={() => setOpen(false)}>
-                  Claim My FREE Report
-                </a>
-              </Button>
-            </li>
           </ul>
+          <Button
+            asChild
+            variant="hero"
+            className="w-full"
+            onClick={() => setOpen(false)}
+          >
+            <a href="#lead-form">Close Menu</a>
+          </Button>
         </div>
       ) : null}
     </header>
