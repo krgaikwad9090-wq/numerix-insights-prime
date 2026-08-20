@@ -69,7 +69,7 @@ function Index() {
   return (
     <div className="min-h-dvh">
       <Navbar />
-      <main>
+      <main className="pt-16">
         <ProductSelector />
         <Hero />
         <Problems />
